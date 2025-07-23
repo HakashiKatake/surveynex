@@ -40,9 +40,14 @@ export async function POST(request: NextRequest) {
     const newUser = new User(userData);
     await newUser.save();
 
-    // Save to Excel file
-    const excelManager = new ExcelManager();
-    await excelManager.addUser(userData);
+    // Save to Excel file (non-blocking, log error but don't fail registration)
+    try {
+      const excelManager = new ExcelManager();
+      await excelManager.addUser(userData);
+    } catch (excelError) {
+      console.error('Excel export error:', excelError);
+      // Optionally, you can notify the user that Excel export failed
+    }
 
     return NextResponse.json(
       { 
@@ -59,14 +64,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Registration error:', error);
-    
     if (error instanceof Error && error.message.includes('E11000')) {
       return NextResponse.json(
         { error: 'User with this email already exists' },
         { status: 409 }
       );
     }
-
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -74,20 +77,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
-  try {
-    await dbConnect();
-    
-    const users = await User.find({}, {
-      password: 0, // Exclude sensitive data if any
-    }).sort({ createdAt: -1 });
-
-    return NextResponse.json({ users });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch users' },
-      { status: 500 }
-    );
-  }
-}
