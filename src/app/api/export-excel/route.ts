@@ -3,7 +3,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 export async function GET(request: NextRequest) {
-  // Optional: Add authentication/authorization here for owner access
+  
   const filePath = path.join(process.cwd(), 'exports', 'registrations.xlsx');
 
   try {
