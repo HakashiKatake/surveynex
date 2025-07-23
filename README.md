@@ -1,36 +1,207 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SurveyNex - User Registration Waitlist
 
-## Getting Started
+A modern, production-ready waiting page application built with Next.js 14, featuring user registration with dual storage (MongoDB + Excel), stunning animations, and a clean black/white design. For the internship assignment
 
-First, run the development server:
+## Features
 
+### 🎯 Core Functionality
+- **User Registration Form** with comprehensive validation
+- **Dual Storage System** - Save to both MongoDB and Excel files
+- **Real-time Form Validation** using Zod and React Hook Form
+- **Production-ready API** with proper error handling
+
+### 🎨 Design & UX
+- **Clean Black & White Theme** with modern aesthetics
+- **Fluid Animations** powered by Framer Motion
+- **Responsive Design** optimized for all devices
+- **Interactive Effects** and micro-interactions
+- **Accessible UI** with proper form labels and ARIA support
+
+### 📊 Data Collection
+The form collects the following user information:
+- Full Name (with validation)
+- Age (13-120 range validation)
+- Email Address (with format validation and uniqueness check)
+- Location (Country, State, County/Province)
+- Industry/Domain (dropdown selection)
+
+### 🛠 Tech Stack
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Database**: MongoDB with Mongoose ODM
+- **File Export**: Excel generation with xlsx
+- **Validation**: Zod schema validation
+- **Forms**: React Hook Form with resolver integration
+
+## Installation & Setup
+
+### Prerequisites
+- Node.js 18+ and npm
+- MongoDB (local installation or MongoDB Atlas)
+
+### 1. Clone and Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd surveynex
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Configuration
+Create a `.env.local` file in the root directory:
+```env
+MONGODB_URI=mongodb://localhost:27017/surveynex
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Database Setup
+Make sure MongoDB is running:
+```bash
+# For local MongoDB
+mongod
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Or use MongoDB Atlas cloud connection string
+```
 
-## Learn More
+### 4. Start Development Server
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+The application will be available at `http://localhost:3000`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── api/register/
+│   │   └── route.ts          # Registration API endpoint
+│   ├── layout.tsx            # Root layout with metadata
+│   └── page.tsx              # Main landing page
+├── components/
+│   ├── RegistrationForm.tsx  # Main registration form
+│   └── SuccessMessage.tsx    # Success state component
+├── lib/
+│   ├── mongodb.ts            # Database connection utility
+│   ├── validation.ts         # Zod validation schemas
+│   └── excel.ts              # Excel file generation utility
+└── models/
+    └── User.ts               # MongoDB user model
+```
 
-## Deploy on Vercel
+## API Endpoints
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### POST /api/register
+Registers a new user with validation and dual storage.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Request Body:**
+```json
+{
+  "fullName": "John Doe",
+  "age": 30,
+  "email": "john@example.com",
+  "country": "United States",
+  "state": "California",
+  "county": "Los Angeles",
+  "industry": "Technology"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "Registration successful",
+  "user": {
+    "id": "user_id",
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "createdAt": "2025-01-23T..."
+  }
+}
+```
+
+### GET /api/register
+Retrieves all registered users (for admin purposes).
+
+## Deployment
+
+### Build for Production
+```bash
+npm run build
+npm start
+```
+
+### Environment Variables for Production
+Ensure these are set in your production environment:
+- `MONGODB_URI`: Your MongoDB connection string
+- `NEXT_PUBLIC_APP_URL`: Your production domain
+
+### Recommended Deployment Platforms
+- **Vercel** (recommended for Next.js)
+- **Netlify**
+- **Railway**
+- **AWS/Azure/GCP**
+
+## Data Storage
+
+### MongoDB
+User data is stored in a MongoDB collection with the following schema:
+- Full validation and indexing on email field
+- Timestamps for created/updated dates
+- Proper error handling for duplicate emails
+
+### Excel Files
+Data is also exported to Excel files located in `/exports/registrations.xlsx`:
+- Automatic file creation and updates
+- Formatted columns with proper widths
+- Includes registration timestamps
+
+## Security Features
+
+- **Input Validation**: Comprehensive Zod schemas
+- **SQL Injection Protection**: Using Mongoose ODM
+- **XSS Prevention**: React's built-in protection
+- **CORS Configuration**: Proper API security
+- **Environment Variables**: Sensitive data protection
+
+## Development
+
+### Available Scripts
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript type checking
+```
+
+### Code Quality
+- TypeScript for type safety
+- ESLint for code quality
+- Tailwind CSS for consistent styling
+- Modular component architecture
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if needed
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Support
+
+For issues and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Review the code examples
+
+---
+
+**SurveyNex** - The future of intelligent survey creation and analysis.
